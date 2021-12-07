@@ -253,9 +253,61 @@ Router.route('/users')
 
 // logique pour la route 'user/id'
 Router.route('/users/:id')
-.get()
-.put()
-.delete();
+.get((req, res) => {
+    // recherche d'un utilisateur par id
+    let userIndex = users.findIndex((usr)=>{
+        // Le prédicat valide une égalité stricte
+        // usr.id est un number / req.params.id est un string
+        // parseInt nous assure d'avoir un id en number
+        return usr.id === parseInt(req.params.id);
+    })
+    if (userIndex != -1) {
+        res.status(200)
+        res.json(users[userIndex]);
+    } else {
+        res.status(404);
+        res.end();
+    }
+})
+.put((req, res) => {
+    let userIndex = users.findIndex((usr)=>{
+        return usr.id === parseInt(req.params.id);
+    })
+    if (userIndex != -1) {
+    users[userIndex] = req.body;
+    res.status(200).json(users);
+    }
+    else {
+        res.status(404);
+        res.end();
+    }
+})
+.patch((req, res) => {
+    let userIndex = users.findIndex((usr)=>{
+        return usr.id === parseInt(req.params.id);
+    })
+    if (userIndex != -1) {
+    // Object.keys retourne les clés d'un objet
+        Object.keys(req.body).forEach((key) => {
+            users[index][key] = req.body[key];
+        })
+
+
+    res.status(200).json(users);
+    }
+    else {
+        res.status(404);
+        res.end();
+    }
+})
+.delete((req, res) => {
+    let userIndex = users.findIndex((usr)=>{
+        return usr.id === parseInt(req.params.id);
+    })
+
+    users.splice(userIndex,1);
+    
+});
 
 // export 
 module.exports = Router;
